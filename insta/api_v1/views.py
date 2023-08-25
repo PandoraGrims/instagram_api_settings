@@ -1,8 +1,8 @@
 from rest_framework.permissions import IsAuthenticated, SAFE_METHODS
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from api_v1.serializers import PostSerializer
-from webapp.models import Post
+from api_v1.serializers import PostSerializer, LikeSerializer
+from webapp.models import Post, Like
 from rest_framework.decorators import action
 
 
@@ -31,3 +31,17 @@ class ApiViewSet(ModelViewSet):
     def get_likes_count(self, request, *args, **kwargs):
         post = self.get_object()
         return Response({"like_users": post.like_users.count()})
+
+
+class LikeViewSet(ModelViewSet):
+    queryset = Like.objects.all()
+    serializer_class = LikeSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    def get_permissions(self):
+        super().get_permissions()
+        if self.request.method in SAFE_METHODS:
+            return []
+        return [IsAuthenticated()]
