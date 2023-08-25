@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
-from webapp.models import Post
+from webapp.models import Post, Like
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -12,3 +12,9 @@ class PostSerializer(serializers.ModelSerializer):
         if len(value) < 5:
             raise ValidationError("Длина меньше 5 символов не разрешена")
         return value
+
+
+class LikeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Like
+        fields = '__all__'
