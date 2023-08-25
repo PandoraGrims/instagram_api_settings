@@ -27,3 +27,11 @@ class Post(CreateUpdateAbstractModel):
         db_table = "posts"
         verbose_name = "Пост"
         verbose_name_plural = "Посты"
+
+
+class Like(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="likes")
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="liked_posts")
+
+    def __str__(self):
+        return f"{self.user} {self.post}"
