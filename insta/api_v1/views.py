@@ -1,5 +1,6 @@
 from rest_framework.permissions import IsAuthenticated, SAFE_METHODS
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from api_v1.serializers import PostSerializer, LikeSerializer
 from webapp.models import Post, Like
@@ -31,6 +32,15 @@ class ApiViewSet(ModelViewSet):
     def get_likes_count(self, request, *args, **kwargs):
         post = self.get_object()
         return Response({"like_users": post.like_users.count()})
+
+
+class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        user.auth_token.delete()
+        return Response({'status': 'ok'})
 
 
 class LikeViewSet(ModelViewSet):
